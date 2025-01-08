@@ -1,0 +1,73 @@
+import random
+import json
+
+# Simulated AI response (replace with actual AI model integration)
+def generate_from_prompt(prompt):
+    """
+    Parses a game design prompt and determines what kind of generation is needed.
+    """
+    # Example: A more advanced version could use NLP models like GPT to parse and classify the input.
+    if "dungeon" in prompt.lower():
+        return generate_dungeon()
+    elif "open world" in prompt.lower():
+        return generate_open_world()
+    elif "platformer" in prompt.lower():
+        return generate_platformer_level()
+    else:
+        return {"error": "Unknown game type. Try specifying 'dungeon', 'open world', or 'platformer'."}
+
+# 🎲 Basic Dungeon Generator
+def generate_dungeon(width=10, height=10, room_count=5):
+    """
+    Generates a simple dungeon with rooms and corridors.
+    """
+    dungeon = [["#" for _ in range(width)] for _ in range(height)]  # Walls
+    rooms = []
+
+    for _ in range(room_count):
+        w, h = random.randint(2, 5), random.randint(2, 5)
+        x, y = random.randint(1, width - w - 1), random.randint(1, height - h - 1)
+        
+        for i in range(h):
+            for j in range(w):
+                dungeon[y + i][x + j] = "."
+
+        rooms.append({"x": x, "y": y, "width": w, "height": h})
+    
+    return {"type": "dungeon", "grid": dungeon, "rooms": rooms}
+
+# 🌍 Open World Terrain Generator
+def generate_open_world(size=50):
+    """
+    Generates a random open-world map with biomes.
+    """
+    biomes = ["grassland", "desert", "forest", "mountain", "water"]
+    world = [[random.choice(biomes) for _ in range(size)] for _ in range(size)]
+    
+    return {"type": "open_world", "map": world}
+
+# 🎮 Platformer Level Generator
+def generate_platformer_level(length=30, height=10):
+    """
+    Generates a 2D platformer level layout.
+    """
+    level = [[" " for _ in range(length)] for _ in range(height)]
+
+    for x in range(length):
+        if random.random() < 0.2:  # 20% chance to place a platform
+            y = random.randint(height // 2, height - 1)
+            level[y][x] = "🟫"  # Platform block
+
+    return {"type": "platformer", "level": level}
+
+# 🔄 Main Generator Function
+def generate_game_content(prompt):
+    """
+    Main entry point for procedural generation.
+    """
+    return json.dumps(generate_from_prompt(prompt), indent=2)
+
+# Example Usage:
+if __name__ == "__main__":
+    prompt = input("Enter your game prompt: ")  # Example: "Generate a dungeon"
+    print(generate_game_content(prompt))
